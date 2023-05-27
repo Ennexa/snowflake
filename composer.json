@@ -3,7 +3,7 @@
     "description": "Snowflake ID Generator that does not require a daemon",
     "type": "library",
     "require": {
-        "php": ">=5.6.0"
+        "php": ">=7.4"
     },
     "license": "MIT",
     "authors": [

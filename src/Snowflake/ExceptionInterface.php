@@ -2,6 +2,6 @@
 
 namespace Ennexa\Snowflake;
 
-interface ExceptionInterface {
-
+interface ExceptionInterface extends \Throwable
+{
 }

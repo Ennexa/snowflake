@@ -1,35 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Ennexa\Snowflake;
 
-use Exception\InvalidArgumentException;
-use Exception\InvalidSystemClockException;
+use Ennexa\Snowflake\Exception\InvalidArgumentException;
+use Ennexa\Snowflake\Exception\InvalidSystemClockException;
 
-class Generator {
+class Generator
+{
     const NODE_LEN = 8;
     const WORKER_LEN = 8;
     const SEQUENCE_LEN = 8;
 
-    private $instanceId = 0;
-    private $startEpoch = 1546300800000;
-    private $sequenceMax;
-    private $store;
+    private int $instanceId = 0;
+    private int $startEpoch = 1546300800000;
+    private int $sequenceMask;
+    private int $sequenceMax;
+    private StoreInterface $store;
+    private int $tickShift;
 
-    private static function getMaxValue(int $len)
+    private static function getMaxValue(int $len): int
     {
         return -1 ^ (-1 << $len);
     }
 
     public static function generateInstanceId($nodeId = 0, $workerId = 0)
     {
-        $nodeIdMax = $this->getMaxValue(self::NODE_LEN);
+        $nodeIdMax = self::getMaxValue(self::NODE_LEN);
         if ($nodeId < 0 || $nodeId > $nodeIdMax) {
-            throw InvalidArgumentException("Node ID should be between 0 and $nodeIdMax");
+            throw new InvalidArgumentException("Node ID should be between 0 and $nodeIdMax");
         }
 
-        $workerIdMax = $this->getMaxValue(self::WORKER_LEN);
+        $workerIdMax = self::getMaxValue(self::WORKER_LEN);
         if ($workerId < 0 || $workerId > $workerIdMax) {
-            throw InvalidArgumentException("Worker ID should be between 0 and $workerIdMax");
+            throw new InvalidArgumentException("Worker ID should be between 0 and $workerIdMax");
         }
 
         return $nodeId << self::WORKER_LEN | $workerId;
@@ -51,33 +56,24 @@ class Generator {
 
     /**
      * Set the sequence store
-     *
-     * @param int Instance Id
-     * @return void
      */
-    public function setStore(StoreInterface $store)
+    public function setStore(StoreInterface $store): void
     {
         $this->store = $store;
     }
 
     /**
      * Get the current generator instance id
-     *
-     * @param int Instance Id
-     * @return void
      */
-    public function getInstanceId()
+    public function getInstanceId(): int
     {
         return $this->instanceId >> self::SEQUENCE_LEN;
     }
 
     /**
      * Set the instance id for the generator instance
-     *
-     * @param int Instance Id
-     * @return void
      */
-    public function setInstanceId(int $instanceId)
+    public function setInstanceId(int $instanceId): void
     {
         $this->instanceId = $instanceId << self::SEQUENCE_LEN;
     }
@@ -95,10 +91,10 @@ class Generator {
     /**
      * Generate a unique id based on the epoch and instance id
      *
-     * @return int unique 64-bit id
+     * @return string unique 64-bit id
      * @throws InvalidSystemClockException
      */
-    public function nextId()
+    public function nextId(): string
     {
         list($timestamp, $sequence) = $this->nextSequence();
 
