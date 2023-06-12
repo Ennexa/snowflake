@@ -7,10 +7,10 @@ use Ennexa\Snowflake\Exception\RuntimeException;
 
 class RedisStore implements StoreInterface
 {
-    private $backend;
-    public function __construct(\Redis $redis)
+    private \Redis $backend;
+    public function __construct(\Redis $backend)
     {
-        $this->backend = $redis;
+        $this->backend = $backend;
     }
 
     private function getLuaScript()

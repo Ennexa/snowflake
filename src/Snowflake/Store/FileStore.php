@@ -7,7 +7,8 @@ use Ennexa\Snowflake\Exception\RuntimeException;
 
 class FileStore implements StoreInterface
 {
-    public function __construct($cacheDir)
+    private string $cacheDir;
+    public function __construct(string $cacheDir)
     {
         $this->cacheDir = $cacheDir;
 
