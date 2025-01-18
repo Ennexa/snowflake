@@ -11,11 +11,11 @@ The generator can be used with `PHP-FPM` or `mod_php`.
 ### Usage
 
     // First we need to create a store for saving the state
-    $store = new Snowflake\Store\RedisStore(new \Redis);
-    // $store = new Snowflake\Store\FileStore('/path/to/store/state');
+    $store = new \Ennexa\Snowflake\Store\RedisStore(new \Redis);
+    // $store = new \EnnexaSnowflake\Store\FileStore('/path/to/store/state');
 
     // Create a generator with the created store
-    $generator = new Snowflake\Generator($store, $instanceId = 0);
+    $generator = new \EnnexaSnowflake\Generator($store, $instanceId = 0);
 
     // Use Generator::nextId to generate the next unique id
     echo $generator->nextId();
